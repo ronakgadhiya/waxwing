@@ -1,0 +1,155 @@
+@extends('admin.main.headerfooter')
+@section('contain')
+<style type="text/css">
+table td {
+  white-space: initial;
+}
+</style>
+	<div class="page-wrapper">
+		<div class="page-content">
+			<div class="row">
+				<div class="col-12 col-lg-12 mx-auto">
+					<h5 class="mb-0 text-uppercase">Product Inquiry
+					</h5>
+					<hr class="mt-4"/>
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table id="dataTableBuilder" class="table table-striped table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th><div class="col-sm-12 datatable-form-filter no-padding">{!! Form::select('filter_product',['' => 'Select Product']+$Product,null,['id' => 'filter_product','class' => 'form-select form-control']) !!}</div></th>
+											<th><div class="col-sm-12 datatable-form-filter no-padding"><input type="text" class="form-control" name="filter_name" autocomplete="off" placeholder="Search By Name"></div></th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
+										</tr>
+										<tr>
+											<th>{{ __('common.no') }}</th>
+											<th>Product Name</th>
+											<th>{{ __('common.name') }}</th>
+											<th>{{ __('common.email') }}</th>
+											<th>{{ __('common.number') }}</th>
+											<th>{{ __('common.message') }}</th>
+											<th>{{ __('common.action') }}</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+@include('admin.productcategory.form')
+@endsection
+@section('script')
+<script type="text/javascript">
+    var name="{{ __('common.name') }}";
+	var email="{{ __('common.email') }}";
+	var mobile="{{ __('common.number') }}";
+	var message="{{ __('common.massage') }}";
+    var action="{{ __('common.action') }}";
+
+    (function (window, $) {
+        window.LaravelDataTables = window.LaravelDataTables || {};
+        window.LaravelDataTables["dataTableBuilder"] = $("#dataTableBuilder").DataTable({
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                data: function (d) {
+                    d.name = jQuery(".datatable-form-filter input[name='filter_name']").val();
+                    d.product = jQuery(".datatable-form-filter select[name='filter_product']").val();
+                }
+            },
+            "columns": [ 
+				{
+					"data":'id',
+					"render": function ( data, type, row, meta ) {
+						var info = window.LaravelDataTables["dataTableBuilder"].page.info();
+							if(info.page==0){
+								return (meta.row+1);
+							} else {
+								var no=info.page*10;
+								return (meta.row+1)+no;	
+							}
+						},
+					"orderable": false,
+                    "searchable": false,
+				},
+				{
+					"name": "product",
+                    "data": "product",
+                    "title": "Product Name",
+                    "orderable": false,
+                    "searchable": false 
+                },
+				{
+					"name": "name",
+                    "data": "name",
+                    "title": name,
+                    "orderable": false,
+                    "searchable": false 
+                },
+				{
+					"name": "email",
+                    "data": "email",
+                    "title": email,
+                    "render": null,
+                    "orderable": false,
+                    "searchable": false,
+				},
+				{
+					"name": "mobile",
+                    "data": "mobile",
+                    "title": mobile,
+                    "render": null,
+                    "orderable": false,
+                    "searchable": false,
+				},
+				{
+					"name": "message",
+                    "data": "message",
+                    "title": message,
+                    "render": null,
+                    "orderable": false,
+                    "searchable": false,
+				},	
+				{
+					"name": "action",
+                    "data": "action",
+                    "title": action,
+                    "render": null,
+                    "orderable": false,
+                    "searchable": false,
+                    // "width": "80px"
+                }],
+            "searching": false,
+            //"dom": "<\"wrapper\">rtilfp",
+            // "dom":`<'row'<'col-sm-12'tr>>
+            // <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+            "oLanguage": {
+              "sLengthMenu": "Display &nbsp;_MENU_",
+            },
+            "stateSave": true,
+            responsive: true,
+            colReorder: true,
+            scrollY: '50vh',
+            scrollX: true,
+            "buttons": [],
+            "order": [[ 0, "asc" ]],
+            "pageLength":10,
+        });
+    })(window, jQuery);
+</script>
+@include('admin.comman.datatablefiltar')
+@include('admin.comman.commonscript')
+@include('admin.product-inquiry.script')
+@endsection
